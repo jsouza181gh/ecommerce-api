@@ -7,5 +7,6 @@ sys.path.insert(0, BASE_DIR)
 
 load_dotenv()
 
-mercadopago_access_token = os.getenv('MERCADOPAGO_ACCESS_TOKEN')
-database_url = os.getenv('DATABASE_URL')
+MERCADOPAGO_ACCESS_TOKEN = os.getenv('MERCADOPAGO_ACCESS_TOKEN')
+DATABASE_URL = os.getenv('DATABASE_URL')
+DEFAULT_CURRENCY = os.getenv('DEFAULT_CURRENCY')

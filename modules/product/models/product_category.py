@@ -13,6 +13,3 @@ class ProductCategory(Base):
         "Product",
         back_populates="category"
     )
-    
-    def __init__(self, name):
-        self.name = name

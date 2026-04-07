@@ -1,8 +1,8 @@
 from sqlalchemy.ext.asyncio import create_async_engine
-from app.config import database_url
+from app.config import DATABASE_URL
 
 engine = create_async_engine(
-    database_url,
+    DATABASE_URL,
     pool_size=10,
     max_overflow=20
 )
