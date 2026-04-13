@@ -1,5 +1,6 @@
 from app.config import DEFAULT_CURRENCY
 from infrastructure.database.base import Base
+
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import Column, String, Numeric, ForeignKey, Index, CheckConstraint, text
 from sqlalchemy.orm import relationship

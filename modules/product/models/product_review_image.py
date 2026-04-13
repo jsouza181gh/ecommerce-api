@@ -1,4 +1,5 @@
 from infrastructure.database.base import Base
+
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import Column, String, Integer, ForeignKey, Index, UniqueConstraint, CheckConstraint, text
 from sqlalchemy.orm import relationship
