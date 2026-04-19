@@ -11,10 +11,10 @@ def get_product_repository(db: Annotated[AsyncSession, Depends(get_database)]) -
     return ProductRepository(db)
 
 def get_product_service(
-    repository: Annotated[ProductRepository, Depends(get_product_repository)],
+    product_repository: Annotated[ProductRepository, Depends(get_product_repository)],
     category_repository: Annotated[ProductCategoryRepository, Depends(get_product_category_repository)]
 ) -> ProductService:
-    return ProductService(repository, category_repository)
+    return ProductService(product_repository, category_repository)
 
 ProductDependences = Annotated[
     ProductService,

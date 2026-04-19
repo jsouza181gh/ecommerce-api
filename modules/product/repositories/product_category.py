@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, exists
 from typing import Optional, List
+from uuid import UUID
 
 from ..models import ProductCategory
 
@@ -16,9 +17,18 @@ class ProductCategoryRepository:
         return category
     
 
-    async def find_by_id(self, category_id: str) -> ProductCategory:
+    async def find_by_id(self, category_id: UUID) -> ProductCategory:
         return await self.session.get(ProductCategory, category_id)
     
+    
+    async def exists(self, category_id: UUID) -> bool:
+        query = select(
+            exists().where(ProductCategory.id == category_id)
+        )
+
+        result = await self.session.scalar(query)
+        return bool(result)
+
 
     async def find_all(self, name: Optional[str]) -> List[ProductCategory]:
         query = select(ProductCategory)

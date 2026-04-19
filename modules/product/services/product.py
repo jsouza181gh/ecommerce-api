@@ -5,17 +5,16 @@ from typing import Optional, List
 from uuid import UUID
 
 from ..schemas import SaveProductSchema, ProductSchema
-from ..services import ProductCategoryService
-from ..repositories import ProductRepository
+from ..repositories import ProductRepository, ProductCategoryRepository
 from ..models import Product
 
 @dataclass
 class ProductService:
     product_repository: ProductRepository
-    category_service: ProductCategoryService
+    category_repository: ProductCategoryRepository
 
     async def create(self, product_schema: SaveProductSchema) -> ProductSchema:
-        product_category = await self.category_service.find_by_id(product_schema.category_id)
+        product_category = await self.category_repository.exists(product_schema.category_id)
 
         if not product_category:
             raise HTTPException(
