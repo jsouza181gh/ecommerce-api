@@ -5,7 +5,7 @@ from uuid import UUID
 from ..schemas import SaveProductImageSchema, ProductImageSchema
 from .dependences import ProductImageDependences
 
-router = APIRouter(prefix='product_images', tags=['Product Image'])
+router = APIRouter(prefix='/product_images', tags=['Product Image'])
 
 @router.post(
     '/',
