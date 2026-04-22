@@ -6,7 +6,7 @@ from .product_review_image import ProductReviewImage
 from .product_description_image import ProductDescriptionImage
 from .product_description_section import ProductDescriptionSection
 
-__all__ = {
+__all__ = [
     "Product",
     "ProductImage",
     "ProductCategory",
@@ -14,4 +14,4 @@ __all__ = {
     "ProductReviewImage",
     "ProductDescriptionImage",
     "ProductDescriptionSection"
-}
+]

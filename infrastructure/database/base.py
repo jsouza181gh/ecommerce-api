@@ -3,15 +3,7 @@ from .engine import engine
 
 Base = declarative_base()
 
-from modules.product.models import (
-    Product,
-    ProductImage,
-    ProductCategory,
-    ProductReview,
-    ProductReviewImage,
-    ProductDescriptionImage,
-    ProductDescriptionSection
-)
+from modules.product.models import *
 
 async def createDataBase(drop_all: bool):
     async with engine.begin() as conn:
