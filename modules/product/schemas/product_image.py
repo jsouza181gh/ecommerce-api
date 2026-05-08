@@ -1,4 +1,4 @@
-from pydantic import BaseModel, AnyUrl
+from pydantic import BaseModel, AnyUrl, ConfigDict
 from uuid import UUID
 
 class SaveProductImageSchema(BaseModel):
@@ -12,3 +12,5 @@ class ProductImageSchema(BaseModel):
     title: str
     image_url: AnyUrl
     position: int
+
+    model_config = ConfigDict(from_attributes=True)
