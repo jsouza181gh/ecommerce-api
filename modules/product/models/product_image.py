@@ -10,7 +10,7 @@ class ProductImage(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()"))
     product_id = Column("product_id", UUID(as_uuid=True), ForeignKey("products.id", ondelete="CASCADE"), nullable=False)
     title = Column("title", String(50), nullable=True)
-    image_url = Column("image_url", String(500), nullable=False)
+    image_url = Column("image_url", String(500), nullable=False, unique=True)
     position = Column(Integer, nullable=False, default=0)
 
     product = relationship(
