@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from fastapi import HTTPException, status
 from sqlalchemy.exc import IntegrityError
-from typing import List
+from typing import Optional, List
 from uuid import UUID
 
 from ..repositories import ProductImageRepository, ProductRepository
@@ -106,7 +106,11 @@ class ProductImageService:
 
 
     @staticmethod
-    def convert_schema_to_model(image_schema: SaveProductImageSchema, position: int = 0) -> ProductImage:
+    def convert_schema_to_model(
+        image_schema: SaveProductImageSchema,
+        position: Optional[int] = 0
+    ) -> ProductImage:
+        
         return ProductImage(
             product_id=image_schema.product_id,
             title=image_schema.title,

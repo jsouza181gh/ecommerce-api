@@ -5,7 +5,7 @@ class SaveProductDescriptionSectionSchema(BaseModel):
     product_id: UUID
     title: str
     subtitle: str
-    descrition: str
+    description: str
 
 
 class ProductDescriptionSectionSchema(BaseModel):

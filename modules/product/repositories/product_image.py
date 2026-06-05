@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, exists, func
-from typing import Optional, List
+from typing import Optional, Sequence
 from uuid import UUID
 
 from ..models import ProductImage
@@ -21,7 +21,7 @@ class ProductImageRepository:
         return await self.session.get(ProductImage, image_id)
     
 
-    async def get_max_position(self, product_id: UUID) -> int:
+    async def get_max_position(self, product_id: UUID) -> Optional[int]:
         query = (
             select(func.max(ProductImage.position))
             .where(ProductImage.product_id == product_id)
@@ -32,7 +32,8 @@ class ProductImageRepository:
 
     async def exists(self, image_id: UUID) -> bool:
         query = select(
-            exists().where(ProductImage.id == image_id)
+            exists()
+            .where(ProductImage.id == image_id)
         )
 
         result = await self.session.execute(query)
@@ -40,8 +41,10 @@ class ProductImageRepository:
         return bool(result)
 
 
-    async def find_all(self) -> List[ProductImage]:
-        result = await self.session.execute(select(ProductImage))
+    async def find_all(self) -> Sequence[ProductImage]:
+        result = await self.session.execute(
+            select(ProductImage)
+        )
         
         return result.scalars().all()
 

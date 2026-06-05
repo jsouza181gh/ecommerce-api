@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, exists
-from typing import Optional, List
+from typing import Optional, Sequence
 from uuid import UUID
 
 from ..models import ProductCategory
@@ -30,7 +30,7 @@ class ProductCategoryRepository:
         return bool(result)
 
 
-    async def find_all(self, name: Optional[str]) -> List[ProductCategory]:
+    async def find_all(self, name: Optional[str]) -> Sequence[ProductCategory]:
         query = select(ProductCategory)
 
         if name:
