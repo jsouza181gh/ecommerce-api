@@ -1,5 +1,5 @@
 import mercadopago
-from app.config import MERCADOPAGO_ACCESS_TOKEN
+from config import MERCADOPAGO_ACCESS_TOKEN
 from uuid import uuid4
 
 def teste():

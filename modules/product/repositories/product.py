@@ -1,8 +1,7 @@
 from dataclasses import dataclass
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.sql.sqltypes import String as SQLAlchemyString
 from sqlalchemy import select, exists
-from typing import Optional, List
+from typing import Optional, Sequence
 from uuid import UUID
 
 from ..models import Product
@@ -32,7 +31,7 @@ class ProductRepository:
         return bool(result)
 
     
-    async def find_all(self) -> List[Product]:
+    async def find_all(self) -> Sequence[Product]:
         result = await self.session.execute(select(Product))
 
         return result.scalars().all()

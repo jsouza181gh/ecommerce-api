@@ -7,11 +7,11 @@ from .product_description_image import ProductDescriptionImage
 from .product_description_section import ProductDescriptionSection
 
 __all__ = [
-    "Product",
-    "ProductImage",
+    "ProductDescriptionSection",
+    "ProductDescriptionImage",
+    "ProductReviewImage",
     "ProductCategory",
     "ProductReview",
-    "ProductReviewImage",
-    "ProductDescriptionImage",
-    "ProductDescriptionSection"
+    "ProductImage",
+    "Product"
 ]

@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 
-import app.config
 from modules.product.controllers import routers
 
 app = FastAPI()

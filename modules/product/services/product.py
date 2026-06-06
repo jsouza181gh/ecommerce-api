@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from fastapi import HTTPException, status
 from sqlalchemy.exc import IntegrityError
-from typing import Optional, List
+from typing import List
 from uuid import UUID
 
 from ..schemas import SaveProductSchema, ProductSchema
@@ -67,7 +67,7 @@ class ProductService:
         if not product:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                datail='Product not found'
+                detail='Product not found'
             )
         
         product_model = self.convert_schema_to_model(product_schema)
