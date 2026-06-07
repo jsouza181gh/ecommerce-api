@@ -80,8 +80,17 @@ class ProductDescriptionSectionService:
         description_section.title = section_model.title
         description_section.subtitle = section_model.subtitle
         description_section.description = section_model.description
+
+        try:
+            new_description_section = await self.description_repository.update(description_section)
+
+        except:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail='Invalid request body'
+            )
         
-        return ProductDescriptionSectionSchema.model_validate(description_section)
+        return ProductDescriptionSectionSchema.model_validate(new_description_section)
 
 
     async def delete(self, section_id: UUID) -> None:

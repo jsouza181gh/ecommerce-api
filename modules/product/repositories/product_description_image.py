@@ -1,6 +1,6 @@
 from dataclasses import dataclass
-from sqlalchemy import select, exists, func
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, exists, func
 from typing import Optional, Sequence
 from uuid import UUID
 
@@ -52,10 +52,10 @@ class ProductDescriptionImageRepository:
         return bool(result)
 
 
-    async def get_max_position(self, description_image_id: UUID) -> Optional[int]:
+    async def get_max_position(self, description_section_id: UUID) -> Optional[int]:
         query = (
             select(func.max(ProductDescriptionImage.position))
-            .where(ProductDescriptionImage.id == description_image_id)
+            .where(ProductDescriptionImage.description_section_id == description_section_id)
         )
 
         return await self.session.scalar(query)
