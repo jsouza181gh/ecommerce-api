@@ -30,8 +30,8 @@ class ProductCategoryRepository:
         if search:
             query = query.where(ProductCategory.name.ilike(f'%{search}%'))
 
-        result = await self.session.scalars(query)
-        return result.all()
+        results = await self.session.scalars(query)
+        return results.all()
 
 
     async def update(self, category: ProductCategory) -> ProductCategory:

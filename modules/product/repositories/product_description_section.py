@@ -25,11 +25,11 @@ class ProductDescriptionSectionRepository:
 
 
     async def find_all(self) -> Sequence[ProductDescriptionSection]:
-        result = await self.session.scalars(
+        results = await self.session.scalars(
             select(ProductDescriptionSection)
         )
 
-        return result.all()
+        return results.all()
 
 
     async def update(self, new_section: ProductDescriptionSection) -> ProductDescriptionSection:

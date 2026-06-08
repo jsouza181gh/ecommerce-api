@@ -25,11 +25,11 @@ class ProductRepository:
 
 
     async def find_all(self) -> Sequence[Product]:
-        result = await self.session.scalars(
+        results = await self.session.scalars(
             select(Product)
         )
 
-        return result.all()
+        return results.all()
 
 
     async def update(self, product: Product) -> Product:

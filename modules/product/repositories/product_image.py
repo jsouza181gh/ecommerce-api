@@ -25,11 +25,11 @@ class ProductImageRepository:
 
 
     async def find_all(self) -> Sequence[ProductImage]:
-        result = await self.session.scalars(
+        results = await self.session.scalars(
             select(ProductImage)
         )
 
-        return result.all()
+        return results.all()
 
 
     async def update(self, new_image: ProductImage) -> ProductImage:
