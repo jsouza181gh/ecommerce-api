@@ -5,7 +5,7 @@ from uuid import UUID
 from ..schemas import SaveProductDescriptionSectionSchema, ProductDescriptionSectionSchema
 from .dependences import ProductDescriptionSectionDependences
 
-router = APIRouter(prefix='/product_descriptions', tags=['Product Description'])
+router = APIRouter(prefix='/product-descriptions', tags=['Product Description'])
 
 @router.post(
     '/',
@@ -51,7 +51,7 @@ async def list_description_section(
 @router.put(
     '/{section_id}',
     response_model=ProductDescriptionSectionSchema,
-    status_code=status.HTTP_201_CREATED
+    status_code=status.HTTP_200_OK
 )
 async def update_description_section(
     description_service: ProductDescriptionSectionDependences,
@@ -65,7 +65,6 @@ async def update_description_section(
 
 @router.delete(
     '/{section_id}',
-    response_model=None,
     status_code=status.HTTP_204_NO_CONTENT
 )
 async def delete_description_section(

@@ -5,7 +5,7 @@ from uuid import UUID
 from ..schemas import SaveProductImageSchema, ProductImageSchema
 from .dependences import ProductImageDependences
 
-router = APIRouter(prefix='/product_images', tags=['Product Image'])
+router = APIRouter(prefix='/product-images', tags=['Product Image'])
 
 @router.post(
     '/',
@@ -51,7 +51,7 @@ async def list_product_images(
 @router.put(
     '/{image_id}',
     response_model=ProductImageSchema,
-    status_code=status.HTTP_201_CREATED
+    status_code=status.HTTP_200_OK
 )
 async def update_product_image(
     product_image_service: ProductImageDependences,
@@ -65,7 +65,6 @@ async def update_product_image(
 
 @router.delete(
     '/{image_id}',
-    response_model=None,
     status_code=status.HTTP_204_NO_CONTENT
 )
 async def delete_product_image(

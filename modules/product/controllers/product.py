@@ -49,7 +49,7 @@ async def list_products( product_service: ProductDependences):
 @router.put(
     '/{product_id}',
     response_model=ProductSchema,
-    status_code=status.HTTP_201_CREATED
+    status_code=status.HTTP_200_OK
 )
 async def update_product(
     product_service: ProductDependences,
@@ -63,7 +63,6 @@ async def update_product(
 
 @router.delete(
     '/{product_id}',
-    response_model=None,
     status_code=status.HTTP_204_NO_CONTENT
 )
 async def delete_product(

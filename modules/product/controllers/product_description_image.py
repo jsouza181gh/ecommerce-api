@@ -5,7 +5,7 @@ from uuid import UUID
 from ..schemas import SaveProductDescriptionImageSchema, ProductDescriptionImageSchema
 from .dependences import ProductDescriptionImageDependences
 
-router = APIRouter(prefix='/description_images', tags=['Product Description Image'])
+router = APIRouter(prefix='/description-images', tags=['Product Description Image'])
 
 @router.post(
     '/',
@@ -51,7 +51,7 @@ async def list_description_images(
 @router.put(
     '/{description_image_id}',
     response_model=ProductDescriptionImageSchema,
-    status_code=status.HTTP_201_CREATED
+    status_code=status.HTTP_200_OK
 )
 async def update_description_image(
     description_image_service: ProductDescriptionImageDependences,
@@ -65,7 +65,6 @@ async def update_description_image(
 
 @router.delete(
     '/{description_image_id}',
-    response_model=None,
     status_code=status.HTTP_204_NO_CONTENT
 )
 async def delete_description_image(
