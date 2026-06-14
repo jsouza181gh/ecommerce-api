@@ -1,0 +1,18 @@
+from pydantic import BaseModel, ConfigDict
+from typing import Optional
+from uuid import UUID
+
+class SaveProductReviewImageSchema(BaseModel):
+    review_id: UUID
+    title: Optional[str]
+    image_url: str
+
+
+class ProductReviewImageSchema(BaseModel):
+    id: UUID
+    review_id: UUID
+    title: Optional[str]
+    image_url: str
+    position: int
+
+    model_config = ConfigDict(from_attributes=True)
