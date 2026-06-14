@@ -52,10 +52,10 @@ class ProductReviewImageRepository:
         return bool(result)
 
 
-    async def get_max_position(self, review_image_id: UUID) -> Optional[int]:
+    async def get_max_position(self, review_id: UUID) -> Optional[int]:
         query = (
             select(func.max(ProductReviewImage.position))
-            .where(ProductReviewImage.id == review_image_id)
+            .where(ProductReviewImage.review_id == review_id)
         )
 
         return await self.session.scalar(query)
