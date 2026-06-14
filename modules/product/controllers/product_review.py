@@ -2,7 +2,7 @@ from fastapi import APIRouter, status
 from typing import List
 from uuid import UUID
 
-from .dependences import ProductReviewDependences
+from .dependencies import ProductReviewDependencies
 from ..schemas import SaveProductReviewSchema, ProductReviewSchema
 
 router = APIRouter(prefix='/product-reviews', tags=['Product Reviews'])
@@ -13,8 +13,8 @@ router = APIRouter(prefix='/product-reviews', tags=['Product Reviews'])
     status_code=status.HTTP_201_CREATED
 )
 async def create_product_review(
-    review_service: ProductReviewDependences,
-    payload: SaveProductReviewSchema
+    payload: SaveProductReviewSchema,
+    review_service: ProductReviewDependencies
 ):
     new_review = await review_service.create(payload)
 
@@ -27,8 +27,8 @@ async def create_product_review(
     status_code=status.HTTP_200_OK
 )
 async def get_product_review(
-    review_service: ProductReviewDependences,
-    review_id: UUID
+    review_id: UUID,
+    review_service: ProductReviewDependencies
 ):
     review = await review_service.find_by_id(review_id)
 
@@ -41,7 +41,7 @@ async def get_product_review(
     status_code=status.HTTP_200_OK
 )
 async def list_product_reviews(
-    review_service: ProductReviewDependences,
+    review_service: ProductReviewDependencies
 ):
     reviews = await review_service.find_all()
     
@@ -54,9 +54,9 @@ async def list_product_reviews(
     status_code=status.HTTP_200_OK
 )
 async def update_product_review(
-    review_service: ProductReviewDependences,
+    review_id: UUID,
     payload: SaveProductReviewSchema,
-    review_id: UUID
+    review_service: ProductReviewDependencies
 ):
     new_review = await review_service.update(review_id, payload)
 
@@ -68,7 +68,7 @@ async def update_product_review(
     status_code=status.HTTP_204_NO_CONTENT
 )
 async def delete_product_review(
-    review_service: ProductReviewDependences,
-    review_id: UUID
+    review_id: UUID,
+    review_service: ProductReviewDependencies
 ):
     await review_service.delete(review_id)

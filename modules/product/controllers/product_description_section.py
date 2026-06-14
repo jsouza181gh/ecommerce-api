@@ -3,7 +3,7 @@ from typing import List
 from uuid import UUID
 
 from ..schemas import SaveProductDescriptionSectionSchema, ProductDescriptionSectionSchema
-from .dependences import ProductDescriptionSectionDependences
+from .dependencies import ProductDescriptionSectionDependencies
 
 router = APIRouter(prefix='/product-descriptions', tags=['Product Description'])
 
@@ -13,8 +13,8 @@ router = APIRouter(prefix='/product-descriptions', tags=['Product Description'])
     status_code=status.HTTP_201_CREATED
 )
 async def create_description_section(
-    description_service: ProductDescriptionSectionDependences,
-    payload: SaveProductDescriptionSectionSchema
+    payload: SaveProductDescriptionSectionSchema,
+    description_service: ProductDescriptionSectionDependencies
 ):
     new_description_section = await description_service.create(payload)
 
@@ -27,8 +27,8 @@ async def create_description_section(
     status_code=status.HTTP_200_OK
 )
 async def get_description_section(
-    description_service: ProductDescriptionSectionDependences,
-    section_id: UUID
+    section_id: UUID,
+    description_service: ProductDescriptionSectionDependencies
 ):
     description_section = await description_service.find_by_id(section_id)
 
@@ -41,7 +41,7 @@ async def get_description_section(
     status_code=status.HTTP_200_OK
 )
 async def list_description_section(
-    description_service: ProductDescriptionSectionDependences
+    description_service: ProductDescriptionSectionDependencies
 ):
     description_sections = await description_service.find_all()
     
@@ -54,9 +54,9 @@ async def list_description_section(
     status_code=status.HTTP_200_OK
 )
 async def update_description_section(
-    description_service: ProductDescriptionSectionDependences,
+    section_id: UUID,
     payload: SaveProductDescriptionSectionSchema,
-    section_id: UUID
+    description_service: ProductDescriptionSectionDependencies
 ):
     new_description_section = await description_service.update(section_id, payload)
 
@@ -68,7 +68,7 @@ async def update_description_section(
     status_code=status.HTTP_204_NO_CONTENT
 )
 async def delete_description_section(
-    description_service: ProductDescriptionSectionDependences,
-    section_id: UUID
+    section_id: UUID,
+    description_service: ProductDescriptionSectionDependencies
 ):
     await description_service.delete(section_id)

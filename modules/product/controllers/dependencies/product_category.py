@@ -12,7 +12,7 @@ def get_product_category_repository(db: Annotated[AsyncSession, Depends(get_data
 def get_product_category_service(repository: Annotated[ProductCategoryRepository, Depends(get_product_category_repository)]):
     return ProductCategoryService(repository)
 
-ProductCategoryDependences = Annotated[
+ProductCategoryDependencies = Annotated[
     ProductCategoryService,
     Depends(get_product_category_service)
 ]

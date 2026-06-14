@@ -18,7 +18,7 @@ def get_description_image_service(
 ):
     return ProductDescriptionImageService(description_image_repository, description_section_repository)
 
-ProductDescriptionImageDependences = Annotated[
+ProductDescriptionImageDependencies = Annotated[
     ProductDescriptionImageService,
     Depends(get_description_image_service)
 ]

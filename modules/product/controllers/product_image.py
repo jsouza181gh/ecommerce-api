@@ -3,7 +3,7 @@ from typing import List
 from uuid import UUID
 
 from ..schemas import SaveProductImageSchema, ProductImageSchema
-from .dependences import ProductImageDependences
+from .dependencies import ProductImageDependencies
 
 router = APIRouter(prefix='/product-images', tags=['Product Image'])
 
@@ -13,8 +13,8 @@ router = APIRouter(prefix='/product-images', tags=['Product Image'])
     status_code=status.HTTP_201_CREATED
 )
 async def create_product_image(
-    product_image_service: ProductImageDependences,
-    payload: SaveProductImageSchema
+    payload: SaveProductImageSchema,
+    product_image_service: ProductImageDependencies
 ):
     new_image = await product_image_service.create(payload)
 
@@ -27,8 +27,8 @@ async def create_product_image(
     status_code=status.HTTP_200_OK
 )
 async def get_product_image(
-    product_image_service: ProductImageDependences,
-    image_id: UUID
+    image_id: UUID,
+    product_image_service: ProductImageDependencies
 ):
     image = await product_image_service.find_by_id(image_id)
 
@@ -41,7 +41,7 @@ async def get_product_image(
     status_code=status.HTTP_200_OK
 )
 async def list_product_images(
-    product_image_service: ProductImageDependences
+    product_image_service: ProductImageDependencies
 ):
     images = await product_image_service.find_all()
 
@@ -54,9 +54,9 @@ async def list_product_images(
     status_code=status.HTTP_200_OK
 )
 async def update_product_image(
-    product_image_service: ProductImageDependences,
+    image_id: UUID,
     payload: SaveProductImageSchema,
-    image_id: UUID
+    product_image_service: ProductImageDependencies
 ):
     new_image = await product_image_service.update(image_id, payload)
 
@@ -68,7 +68,7 @@ async def update_product_image(
     status_code=status.HTTP_204_NO_CONTENT
 )
 async def delete_product_image(
-    product_image_service: ProductImageDependences,
-    image_id: UUID
+    image_id: UUID,
+    product_image_service: ProductImageDependencies
 ):
     await product_image_service.delete(image_id)

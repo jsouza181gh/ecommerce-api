@@ -17,7 +17,7 @@ def get_review_image_service(
 ):
     return ProductReviewImageService(review_image_repository, review_repository)
 
-ProductReviewImageDependences = Annotated[
+ProductReviewImageDependencies = Annotated[
     ProductReviewImageService,
     Depends(get_review_image_service)
 ]

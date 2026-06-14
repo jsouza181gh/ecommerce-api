@@ -17,7 +17,7 @@ def get_product_image_service(
 ) -> ProductImageService:
     return ProductImageService(product_image_repository, product_repository)
 
-ProductImageDependences = Annotated[
+ProductImageDependencies = Annotated[
     ProductImageService,
     Depends(get_product_image_service)
 ]
