@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 from uuid import UUID
 
@@ -14,3 +14,5 @@ class ProductReviewImageSchema(BaseModel):
     title: Optional[str]
     image_url: str
     position: int
+
+    model_config = ConfigDict(from_attributes=True)
