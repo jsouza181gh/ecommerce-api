@@ -17,7 +17,6 @@ def get_product_review_service(
 ):
     return ProductReviewService(review_repository, product_repository)
 
-
 ProductReviewDependences = Annotated[
     ProductReviewService,
     Depends(get_product_review_service)
