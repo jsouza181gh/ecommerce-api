@@ -3,7 +3,7 @@ from typing import List
 from uuid import UUID
 
 from ..schemas import SaveProductReviewImageSchema, ProductReviewImageSchema
-from .dependences import ProductReviewImageDependences
+from .dependencies import ProductReviewImageDependencies
 
 router = APIRouter(prefix='/review-images', tags=['Product Review Image'])
 
@@ -14,7 +14,7 @@ router = APIRouter(prefix='/review-images', tags=['Product Review Image'])
 )
 async def create_review_image(
     payload: SaveProductReviewImageSchema,
-    review_image_service: ProductReviewImageDependences
+    review_image_service: ProductReviewImageDependencies
 ):
     new_review_image = await review_image_service.create(payload)
 
@@ -28,7 +28,7 @@ async def create_review_image(
 )
 async def get_review_image(
     review_image_id: UUID,
-    review_image_service: ProductReviewImageDependences
+    review_image_service: ProductReviewImageDependencies
 ):
     review_image = await review_image_service.find_by_id(review_image_id)
 
@@ -40,7 +40,9 @@ async def get_review_image(
     response_model=List[ProductReviewImageSchema],
     status_code=status.HTTP_200_OK
 )
-async def list_review_images(review_image_service: ProductReviewImageDependences):
+async def list_review_images(
+    review_image_service: ProductReviewImageDependencies
+):
     review_images = await review_image_service.find_all()
 
     return review_images
@@ -54,7 +56,7 @@ async def list_review_images(review_image_service: ProductReviewImageDependences
 async def update_review_image(
     review_image_id: UUID,
     new_review_image: SaveProductReviewImageSchema,
-    review_image_service: ProductReviewImageDependences
+    review_image_service: ProductReviewImageDependencies
 ):
     review_image = await review_image_service.update(review_image_id, new_review_image)
 
@@ -67,6 +69,6 @@ async def update_review_image(
 )
 async def delete_review_image(
     review_image_id: UUID,
-    review_image_service: ProductReviewImageDependences
+    review_image_service: ProductReviewImageDependencies
 ):
     await review_image_service.delete(review_image_id)

@@ -16,7 +16,7 @@ def get_product_service(
 ) -> ProductService:
     return ProductService(product_repository, category_repository)
 
-ProductDependences = Annotated[
+ProductDependencies = Annotated[
     ProductService,
     Depends(get_product_service)
 ]

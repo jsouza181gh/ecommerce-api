@@ -3,7 +3,7 @@ from typing import List
 from uuid import UUID
 
 from ..schemas.product import SaveProductSchema, ProductSchema
-from .dependences import ProductDependences
+from .dependencies import ProductDependencies
 
 router = APIRouter(prefix='/products', tags=['Product'])
 
@@ -13,8 +13,8 @@ router = APIRouter(prefix='/products', tags=['Product'])
     status_code=status.HTTP_201_CREATED
 )
 async def create_product(
-    product_service: ProductDependences,
-    payload: SaveProductSchema
+    payload: SaveProductSchema,
+    product_service: ProductDependencies
 ):
     new_product = await product_service.create(payload)
 
@@ -27,8 +27,8 @@ async def create_product(
     status_code=status.HTTP_200_OK
 )
 async def get_product(
-    product_service: ProductDependences,
-    product_id: UUID
+    product_id: UUID,
+    product_service: ProductDependencies
 ):
     product = await product_service.find_by_id(product_id)
 
@@ -40,7 +40,9 @@ async def get_product(
     response_model=List[ProductSchema],
     status_code=status.HTTP_200_OK
 )
-async def list_products( product_service: ProductDependences):
+async def list_products(
+    product_service: ProductDependencies
+):
     products = await product_service.find_all()
 
     return products
@@ -52,9 +54,9 @@ async def list_products( product_service: ProductDependences):
     status_code=status.HTTP_200_OK
 )
 async def update_product(
-    product_service: ProductDependences,
+    product_id: UUID,
     payload: SaveProductSchema,
-    product_id: UUID
+    product_service: ProductDependencies
 ):
     new_product = await product_service.update(product_id, payload)
 
@@ -66,7 +68,7 @@ async def update_product(
     status_code=status.HTTP_204_NO_CONTENT
 )
 async def delete_product(
-    product_service: ProductDependences,
-    product_id: UUID
+    product_id: UUID,
+    product_service: ProductDependencies
 ):
     await product_service.delete(product_id)

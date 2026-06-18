@@ -3,7 +3,7 @@ from typing import Optional, List
 from uuid import UUID
 
 from ..schemas import SaveProductCategorySchema, ProductCategorySchema
-from .dependences import ProductCategoryDependences
+from .dependencies import ProductCategoryDependencies
     
 router = APIRouter(prefix='/categories', tags=['Product Category'])
 
@@ -13,8 +13,8 @@ router = APIRouter(prefix='/categories', tags=['Product Category'])
     status_code=status.HTTP_201_CREATED
 )
 async def create_category(
-    category_service: ProductCategoryDependences,
-    payload: SaveProductCategorySchema
+    payload: SaveProductCategorySchema,
+    category_service: ProductCategoryDependencies
 ):
     new_category = await category_service.create(payload)
 
@@ -27,8 +27,8 @@ async def create_category(
     status_code=status.HTTP_200_OK
 )
 async def get_category(
-    category_service: ProductCategoryDependences,
-    category_id: UUID
+    category_id: UUID,
+    category_service: ProductCategoryDependencies
 ):
     category = await category_service.find_by_id(category_id)
 
@@ -41,7 +41,7 @@ async def get_category(
     status_code=status.HTTP_200_OK
 )
 async def list_categories(
-    category_service: ProductCategoryDependences,
+    category_service: ProductCategoryDependencies,
     name: Optional[str] = Query(None, min_length=3)
 ):
     categories = await category_service.find_all(name)
@@ -55,9 +55,9 @@ async def list_categories(
     status_code=status.HTTP_200_OK
 )
 async def update_category(
-    category_service: ProductCategoryDependences,
+    category_id: UUID,
     payload: SaveProductCategorySchema,
-    category_id: UUID
+    category_service: ProductCategoryDependencies
 ):
     new_category = await category_service.update(category_id, payload)
 
@@ -69,7 +69,7 @@ async def update_category(
     status_code=status.HTTP_204_NO_CONTENT
 )
 async def delete_category(
-    category_service: ProductCategoryDependences,
-    category_id: UUID
+    category_id: UUID,
+    category_service: ProductCategoryDependencies
 ):
     await category_service.delete(category_id)

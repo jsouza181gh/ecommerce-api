@@ -3,7 +3,7 @@ from typing import List
 from uuid import UUID
 
 from ..schemas import SaveProductDescriptionImageSchema, ProductDescriptionImageSchema
-from .dependences import ProductDescriptionImageDependences
+from .dependencies import ProductDescriptionImageDependencies
 
 router = APIRouter(prefix='/description-images', tags=['Product Description Image'])
 
@@ -13,8 +13,8 @@ router = APIRouter(prefix='/description-images', tags=['Product Description Imag
     status_code=status.HTTP_201_CREATED
 )
 async def create_description_image(
-    description_image_service: ProductDescriptionImageDependences,
-    payload: SaveProductDescriptionImageSchema
+    payload: SaveProductDescriptionImageSchema,
+    description_image_service: ProductDescriptionImageDependencies
 ):
     new_description_image = await description_image_service.create(payload)
 
@@ -27,8 +27,8 @@ async def create_description_image(
     status_code=status.HTTP_200_OK
 )
 async def get_description_image(
-    description_image_service: ProductDescriptionImageDependences,
-    description_image_id: UUID
+    description_image_id: UUID,
+    description_image_service: ProductDescriptionImageDependencies
 ):
     description_image = await description_image_service.find_by_id(description_image_id)
 
@@ -41,7 +41,7 @@ async def get_description_image(
     status_code=status.HTTP_200_OK
 )
 async def list_description_images(
-    description_image_service: ProductDescriptionImageDependences,
+    description_image_service: ProductDescriptionImageDependencies
 ):
     description_images = await description_image_service.find_all()
 
@@ -54,9 +54,9 @@ async def list_description_images(
     status_code=status.HTTP_200_OK
 )
 async def update_description_image(
-    description_image_service: ProductDescriptionImageDependences,
+    description_image_id: UUID,
     payload: SaveProductDescriptionImageSchema,
-    description_image_id: UUID
+    description_image_service: ProductDescriptionImageDependencies
 ):
     new_description_image = await description_image_service.update(description_image_id, payload)
 
@@ -68,7 +68,7 @@ async def update_description_image(
     status_code=status.HTTP_204_NO_CONTENT
 )
 async def delete_description_image(
-    description_image_service: ProductDescriptionImageDependences,
-    description_image_id: UUID
+    description_image_id: UUID,
+    description_image_service: ProductDescriptionImageDependencies
 ):
     await description_image_service.delete(description_image_id)

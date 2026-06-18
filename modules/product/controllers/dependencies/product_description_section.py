@@ -17,7 +17,7 @@ def get_product_description_section_service(
 ):
     return ProductDescriptionSectionService(description_repository, product_repository)
 
-ProductDescriptionSectionDependences = Annotated[
+ProductDescriptionSectionDependencies = Annotated[
     ProductDescriptionSectionService,
     Depends(get_product_description_section_service)
 ]
