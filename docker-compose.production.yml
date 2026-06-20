@@ -18,7 +18,7 @@ services:
     container_name: fastapi_api
 
     env_file:
-      - .env.production
+      - .env
 
     expose:
       - "8000"
@@ -43,7 +43,7 @@ services:
     restart: unless-stopped
 
     env_file:
-      - .env.production
+      - .env
 
     environment:
       POSTGRES_DB: ${DATABASE_NAME}
