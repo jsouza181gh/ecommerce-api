@@ -17,7 +17,7 @@ class ProductDescriptionImageRepository:
         return description_image
 
 
-    async def find_by_id(self, description_image_id: UUID) -> ProductDescriptionImage:
+    async def find_by_id(self, description_image_id: UUID) -> Optional[ProductDescriptionImage]:
         return await self.session.get(
             ProductDescriptionImage,
             description_image_id

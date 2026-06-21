@@ -17,7 +17,7 @@ class ProductReviewImageRepository:
         return new_review_image
 
 
-    async def find_by_id(self, review_image_id: UUID) -> ProductReviewImage:
+    async def find_by_id(self, review_image_id: UUID) -> Optional[ProductReviewImage]:
         return await self.session.get(
             ProductReviewImage,
             review_image_id
