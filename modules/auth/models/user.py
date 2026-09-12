@@ -16,8 +16,8 @@ class User(Base):
     first_name: Mapped[str] = mapped_column("first_name", String(50), nullable=False)
     last_name: Mapped[str] = mapped_column("last_name", String(50), nullable=False)
     is_active: Mapped[bool] = mapped_column("is_active", Boolean, nullable=False, default=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
-    updated_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), onupdate=func.now())
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     role = relationship(
         "Role",
