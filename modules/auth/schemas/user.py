@@ -1,9 +1,9 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, EmailStr    
 from datetime import datetime
 from uuid import UUID
 
 class SaveUserSchema(BaseModel):
-    email: str
+    email: EmailStr
     password: str
     first_name: str
     last_name: str
@@ -11,12 +11,10 @@ class SaveUserSchema(BaseModel):
 
 class UserSchema(BaseModel):
     id: UUID
-    role_id: UUID
     email: str
     password: str
     first_name: str
     last_name: str
-    is_active: bool
     created_at: datetime
     updated_at: datetime
 
