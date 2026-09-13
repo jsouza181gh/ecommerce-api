@@ -60,6 +60,20 @@ class UserService:
         return UserSchema.model_validate(new_user)
 
 
+    async def deactivate(self, user_id: UUID) -> None:
+        user = await self.user_repository.find_by_id(user_id)
+
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail='User was not found'
+            )
+        
+        user.is_active = False
+
+        await self.user_repository.update(user)
+
+
     async def delete(self, user_id: UUID) -> None:
         user = await self.user_repository.find_by_id(user_id)
 

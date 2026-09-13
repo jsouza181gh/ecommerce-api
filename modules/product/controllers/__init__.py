@@ -6,7 +6,7 @@ from .product_review import router as review_router
 from .product_image import router as image_router
 from .product import router as product_router
 
-routers = [
+product_routers = [
     description_image_router,
     description_router,
     review_image_router,

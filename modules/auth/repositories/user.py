@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, exists
+from sqlalchemy.orm import selectinload
 from typing import Optional, Sequence
 from uuid import UUID
 
@@ -27,6 +28,7 @@ class UserRepository:
     async def find_by_email(self, user_email: str) -> Optional[User]:
         query = (
             select(User)
+            .options(selectinload(User.role))
             .where(User.email == user_email)
         )
 

@@ -1,11 +1,11 @@
 from dataclasses import dataclass
+from jose import ExpiredSignatureError, JWTError
 from fastapi import HTTPException, status
-from datetime import datetime, UTC
 from uuid import UUID
 import bcrypt
 
 from ..repositories import UserRepository, RoleRepository, RefreshTokenRepository
-from ..schemas import SaveUserSchema, LoginSchema, AuthTokenSchema
+from ..schemas import SaveUserSchema, LoginSchema, AuthTokenSchema, RoleSchema
 from ..services import TokenService
 from ..models import User
 
@@ -18,7 +18,7 @@ class AuthService:
     token_repository: RefreshTokenRepository
     token_service: TokenService
 
-    async def register(self, user_schema: SaveUserSchema) -> AuthTokenSchema:
+    async def signup(self, user_schema: SaveUserSchema) -> AuthTokenSchema:
         email_exists = await self.user_repository.exists_by_email(user_schema.email)
 
         if email_exists:
@@ -27,12 +27,12 @@ class AuthService:
                 detail='User with this e-mail already exists'
             )
         
-        role_id = await self.default_role_id()
+        role = await self.default_role()
         hashed_password = self.hash_password(user_schema.password)
 
         new_user = self.convert_schema_to_model(
             user_schema,
-            role_id,
+            role.id,
             hashed_password
         )
 
@@ -47,7 +47,7 @@ class AuthService:
         
         access_token = self.token_service.generate_access_token(
             new_user.id,
-            new_user.role
+            new_user.role.name
         )
 
         refresh_token = self.token_service.generate_refresh_token(new_user.id)
@@ -67,7 +67,7 @@ class AuthService:
         )
 
 
-    async def login(self, login_schema: LoginSchema) -> AuthTokenSchema:
+    async def signin(self, login_schema: LoginSchema) -> AuthTokenSchema:
         user = await self.user_repository.find_by_email(login_schema.email)
 
         if not user:
@@ -89,16 +89,12 @@ class AuthService:
 
         access_token = self.token_service.generate_access_token(
             user.id,
-            user.role
+            user.role.name
         )
 
         refresh_token = self.token_service.generate_refresh_token(user.id)
 
-        old_token = await self.token_repository.find_by_user_id(user.id)
-
-        if old_token:
-            old_token.revoked = True
-            await self.token_repository.update(old_token)
+        await self.token_repository.revoke_old_tokens(user.id)
 
         try:
             await self.token_repository.create(refresh_token)
@@ -115,7 +111,7 @@ class AuthService:
         )
 
 
-    async def logout(self, token_schema: AuthTokenSchema) -> None:
+    async def signout(self, token_schema: AuthTokenSchema) -> None:
         refresh_token = await self.token_repository.find_by_value(token_schema.refresh_token)
 
         if not refresh_token:
@@ -145,21 +141,40 @@ class AuthService:
             )
 
 
-    async def refresh_token(self, token_schema: AuthTokenSchema) -> str:
+    async def get_current_user(self, token: str):
+        try:
+            decoded_token = self.token_service.decode_access_token(token)
+
+        except ExpiredSignatureError:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token expired",
+            )
+        
+        except JWTError:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid token",
+            )
+
+        user = await self.user_repository.find_by_id(UUID(decoded_token.sub))
+
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail='Unrecognized access token'
+            )
+
+        return user
+
+
+    async def refresh(self, token_schema: AuthTokenSchema) -> AuthTokenSchema:
         refresh_token = await self.token_repository.find_by_value(token_schema.refresh_token)
 
         if not refresh_token:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail='Invalid refresh token'
-            )
-
-        is_expired = refresh_token.expires_at < datetime.now(UTC)
-
-        if is_expired:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail='Expired refresh token'
             )
 
         decoded_token = self.token_service.decode_access_token(token_schema.access_token)
@@ -176,23 +191,13 @@ class AuthService:
             decoded_token.role
         )
 
-        return access_token
-    
-    async def deactivate(self, user_id: UUID) -> None:
-        user = await self.user_repository.find_by_id(user_id)
-
-        if not user:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='User was not found'
-            )
-        
-        user.is_active = False
-
-        await self.user_repository.update(user)
+        return AuthTokenSchema(
+            access_token=access_token,
+            refresh_token=token_schema.refresh_token
+        )
 
     
-    async def default_role_id(self) -> UUID:
+    async def default_role(self) -> RoleSchema:
         default_role = await self.role_repository.find_by_name(DEFAULT_ROLE)
 
         if not default_role:
@@ -201,7 +206,7 @@ class AuthService:
                 detail='Customer role has not been configured'
             )
         
-        return default_role.id
+        return default_role
 
 
     @staticmethod
