@@ -1,6 +1,7 @@
 from dataclasses import dataclass
+from fastapi import HTTPException, status, Cookie
 from jose import ExpiredSignatureError, JWTError
-from fastapi import HTTPException, status
+from typing import Annotated
 from uuid import UUID
 import bcrypt
 
@@ -141,7 +142,7 @@ class AuthService:
             )
 
 
-    async def get_current_user(self, token: str):
+    async def get_current_user(self, token: str) -> User:
         try:
             decoded_token = self.token_service.decode_access_token(token)
 
@@ -168,7 +169,7 @@ class AuthService:
         return user
 
 
-    async def refresh(self, token_schema: AuthTokenSchema) -> AuthTokenSchema:
+    async def refresh(self, token_schema: AuthTokenSchema) -> AuthTokenSchema:        
         refresh_token = await self.token_repository.find_by_value(token_schema.refresh_token)
 
         if not refresh_token:
@@ -207,6 +208,22 @@ class AuthService:
             )
         
         return default_role
+
+
+    @staticmethod
+    def get_required_cookie(
+        cookie_name: str
+    ):
+        def cookie_dependency(cookie: Annotated[str | None, Cookie(alias=cookie_name)] = None) -> Annotated[str, Cookie()]:
+            if cookie is None:
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail='Authentication required'
+                )
+
+            return cookie
+        
+        return cookie_dependency
 
 
     @staticmethod

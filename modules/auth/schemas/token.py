@@ -1,6 +1,12 @@
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
+from enum import StrEnum
 from uuid import UUID
+
+class AuthTokensName(StrEnum):
+    ACCESS_TOKEN = "access_token"
+    REFRESH_TOKEN = "refresh_token"
+
 
 class AuthTokenSchema(BaseModel):
     access_token: str

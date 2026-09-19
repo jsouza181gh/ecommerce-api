@@ -1,7 +1,9 @@
-from .auth import UserDependences, AuthDependences, Authenticated
+from .auth import UserDependences, AuthDependences, AccessToken, RefreshToken, CurrentUser
 
 __all__ = [
     "UserDependences",
     "AuthDependences",
-    "Authenticated"
+    "RefreshToken",
+    "AccessToken",
+    "CurrentUser",
 ]
