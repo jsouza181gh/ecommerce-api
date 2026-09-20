@@ -12,7 +12,6 @@ class SaveUserSchema(BaseModel):
 class UserSchema(BaseModel):
     id: UUID
     email: str
-    password: str
     first_name: str
     last_name: str
     created_at: datetime

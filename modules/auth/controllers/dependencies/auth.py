@@ -4,8 +4,10 @@ from typing import Annotated
 
 from infrastructure.database.session import get_database
 from ...repositories import RefreshTokenRepository, UserRepository, RoleRepository
-from ...services import TokenService, AuthService, UserService
+from ...services import TokenService, AuthService
 from ...schemas import AuthTokensName
+from ...models import User
+from .user import get_user_repository
 
 AccessToken =  Annotated[str, Depends(AuthService.get_required_cookie(AuthTokensName.ACCESS_TOKEN))]
 RefreshToken =  Annotated[str, Depends(AuthService.get_required_cookie(AuthTokensName.REFRESH_TOKEN))]
@@ -13,14 +15,8 @@ RefreshToken =  Annotated[str, Depends(AuthService.get_required_cookie(AuthToken
 def get_token_repository(db: Annotated[AsyncSession, Depends(get_database)]) -> RefreshTokenRepository:
     return RefreshTokenRepository(db)
 
-def get_user_repository(db: Annotated[AsyncSession, Depends(get_database)]) -> UserRepository:
-    return UserRepository(db)
-
 def get_role_repository(db: Annotated[AsyncSession, Depends(get_database)]) -> RoleRepository:
     return RoleRepository(db)
-
-def get_user_service(user_repository: Annotated[UserRepository, Depends(get_user_repository)]) -> UserService:
-    return UserService(user_repository)
 
 def get_token_service() -> TokenService:
     return TokenService()
@@ -36,17 +32,12 @@ def get_auth_service(
 async def get_current_user(
     access_token: AccessToken,
     auth_service: Annotated[AuthService, Depends(get_auth_service)]
-):
+) -> User:
     return await auth_service.get_current_user(access_token)
 
-CurrentUser = Depends(get_current_user)
+CurrentUser = Annotated[User, Depends(get_current_user)]
 
-AuthDependences = Annotated[
+AuthDependencies = Annotated[
     AuthService,
     Depends(get_auth_service)
-]
-
-UserDependences = Annotated[
-    UserService,
-    Depends(get_user_service)
 ]

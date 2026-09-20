@@ -19,10 +19,13 @@ class UserRepository:
 
     
     async def find_by_id(self, user_id: UUID) -> Optional[User]:
-        return await self.session.get(
-            User,
-            user_id
+        query = (
+            select(User)
+            .options(selectinload(User.role))
+            .where(User.id == user_id)
         )
+
+        return await self.session.scalar(query)
     
 
     async def find_by_email(self, user_email: str) -> Optional[User]:
@@ -45,6 +48,7 @@ class UserRepository:
 
     async def update(self, user: User) -> User:
         await self.session.flush()
+        await self.session.refresh(user)
 
         return user
 

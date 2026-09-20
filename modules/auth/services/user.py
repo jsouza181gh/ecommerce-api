@@ -12,7 +12,20 @@ from ..models import User
 class UserService:
     user_repository: UserRepository
 
-    async def find_by_id(self, user_id: UUID) -> UserSchema:
+    async def find_by_id(
+        self,
+        user_id: UUID,
+        current_user: User
+    ) -> UserSchema:
+        is_admin = current_user.role.name == 'ADMIN'
+        is_current_user = user_id == current_user.id
+
+        if not (is_admin or is_current_user):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail='You do not have permission to access this resource'
+            )
+        
         user = await self.user_repository.find_by_id(user_id)
 
         if not user:
@@ -24,7 +37,16 @@ class UserService:
         return UserSchema.model_validate(user)
 
 
-    async def find_all(self) -> List[UserSchema]:
+    async def find_all(
+        self,
+        current_user: User
+    ) -> List[UserSchema]:
+        if current_user.role.name != 'ADMIN':
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail='You do not have permission to access this resource'
+            )
+
         users = await self.user_repository.find_all()
 
         return [
@@ -33,7 +55,21 @@ class UserService:
         ]
 
 
-    async def update(self, user_id: UUID, user_schema: SaveUserSchema) -> UserSchema:
+    async def update(
+        self,
+        user_id: UUID,
+        user_schema: SaveUserSchema,
+        current_user: User
+    ) -> UserSchema:
+        is_admin = current_user.role.name == 'ADMIN'
+        is_current_user = user_id == current_user.id
+
+        if not (is_admin or is_current_user):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail='You do not have permission to access this resource'
+            )
+        
         user = await self.user_repository.find_by_id(user_id)
 
         if not user:
@@ -60,7 +96,46 @@ class UserService:
         return UserSchema.model_validate(new_user)
 
 
-    async def deactivate(self, user_id: UUID) -> None:
+    async def activate(
+        self,
+        user_id: UUID,
+        current_user: User
+    ) -> None:
+        is_admin = current_user.role.name == 'ADMIN'
+
+        if not is_admin:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail='You do not have permission to access this resource'
+            )            
+
+        user = await self.user_repository.find_by_id(user_id)
+
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail='User was not found'
+            )
+        
+        user.is_active = True
+
+        await self.user_repository.update(user)
+
+
+    async def deactivate(
+        self, 
+        user_id: UUID,
+        current_user: User
+    ) -> None:
+        is_admin = current_user.role.name == 'ADMIN'
+        is_current_user = user_id == current_user.id
+
+        if not (is_admin or is_current_user):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail='You do not have permission to access this resource'
+            )            
+
         user = await self.user_repository.find_by_id(user_id)
 
         if not user:
@@ -74,7 +149,17 @@ class UserService:
         await self.user_repository.update(user)
 
 
-    async def delete(self, user_id: UUID) -> None:
+    async def delete(
+        self,
+        user_id: UUID,
+        current_user: User
+    ) -> None:
+        if current_user.role.name != 'ADMIN':
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail='You do not have permission to access this resource'
+            )
+        
         user = await self.user_repository.find_by_id(user_id)
 
         if not user:
