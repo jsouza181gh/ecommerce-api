@@ -5,7 +5,7 @@ from sqlalchemy.orm import selectinload
 from typing import Optional, Sequence
 from uuid import UUID
 
-from ..models import User
+from ..models import User, Role
 
 @dataclass
 class UserRepository:
@@ -21,7 +21,10 @@ class UserRepository:
     async def find_by_id(self, user_id: UUID) -> Optional[User]:
         query = (
             select(User)
-            .options(selectinload(User.role))
+            .options(
+                selectinload(User.role)
+                .selectinload(Role.permissions)
+            )
             .where(User.id == user_id)
         )
 

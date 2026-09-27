@@ -4,8 +4,8 @@ from fastapi import HTTPException, status
 from typing import List
 from uuid import UUID
 
-from ..repositories import UserRepository
 from ..schemas import SaveUserSchema, UserSchema
+from ..repositories import UserRepository
 from ..models import User
 
 @dataclass
@@ -17,10 +17,10 @@ class UserService:
         user_id: UUID,
         current_user: User
     ) -> UserSchema:
-        is_admin = current_user.role.name == 'ADMIN'
+        has_permission = self.has_permission('read', current_user)
         is_current_user = user_id == current_user.id
 
-        if not (is_admin or is_current_user):
+        if not (has_permission and is_current_user):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail='You do not have permission to access this resource'
@@ -41,7 +41,9 @@ class UserService:
         self,
         current_user: User
     ) -> List[UserSchema]:
-        if current_user.role.name != 'ADMIN':
+        has_permission = self.has_permission("list", current_user)
+
+        if not has_permission:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail='You do not have permission to access this resource'
@@ -61,10 +63,10 @@ class UserService:
         user_schema: SaveUserSchema,
         current_user: User
     ) -> UserSchema:
-        is_admin = current_user.role.name == 'ADMIN'
+        has_permission = self.has_permission('update', current_user)
         is_current_user = user_id == current_user.id
 
-        if not (is_admin or is_current_user):
+        if not (has_permission and is_current_user):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail='You do not have permission to access this resource'
@@ -90,7 +92,7 @@ class UserService:
         except IntegrityError:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail='Invalid request body'
+                detail='Email address is already in use'
             )
 
         return UserSchema.model_validate(new_user)
@@ -101,9 +103,10 @@ class UserService:
         user_id: UUID,
         current_user: User
     ) -> None:
-        is_admin = current_user.role.name == 'ADMIN'
+        has_permission = self.has_permission("activate", current_user)
+        is_current_user = user_id == current_user.id
 
-        if not is_admin:
+        if not (has_permission and is_current_user):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail='You do not have permission to access this resource'
@@ -127,10 +130,10 @@ class UserService:
         user_id: UUID,
         current_user: User
     ) -> None:
-        is_admin = current_user.role.name == 'ADMIN'
+        has_permission = self.has_permission('deactivate', current_user)
         is_current_user = user_id == current_user.id
 
-        if not (is_admin or is_current_user):
+        if not (has_permission and is_current_user):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail='You do not have permission to access this resource'
@@ -154,7 +157,9 @@ class UserService:
         user_id: UUID,
         current_user: User
     ) -> None:
-        if current_user.role.name != 'ADMIN':
+        has_permission = self.has_permission('delete', current_user)
+
+        if not has_permission:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail='You do not have permission to access this resource'
@@ -169,6 +174,20 @@ class UserService:
             )
         
         await self.user_repository.delete(user)
+
+
+    @staticmethod
+    def has_permission(
+        permission: str,
+        current_user: User
+    ) -> bool:
+        user_permissions = current_user.role.permissions
+
+        return any(
+            user_permission.name == f"users:{permission}"
+            for user_permission in user_permissions
+        )
+
 
     @staticmethod
     def convert_schema_to_model(
